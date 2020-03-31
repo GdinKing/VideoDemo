@@ -32,8 +32,10 @@ class CameraActivity : AppCompatActivity(), SurfaceHolder.Callback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestWindowFeature(Window.FEATURE_NO_TITLE)//取消标题栏
-        getWindow().setFlags(WindowManager.LayoutParams. FLAG_FULLSCREEN ,
-            WindowManager.LayoutParams. FLAG_FULLSCREEN)//全屏
+        getWindow().setFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN
+        )//全屏
         setContentView(R.layout.activity_camera)
         sv_camera.holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS)
         sv_camera.holder.setKeepScreenOn(true)
@@ -104,6 +106,10 @@ class CameraActivity : AppCompatActivity(), SurfaceHolder.Callback {
             stopRecord()
         }
         try {
+            val videoSize = CameraUtil.findFitVideoSize(
+                camera!!.parameters,
+                sv_camera.height / sv_camera.width.toFloat()
+            )
             //先停止camera预览,释放camera
             camera?.stopPreview()
             camera?.unlock()
@@ -121,22 +127,77 @@ class CameraActivity : AppCompatActivity(), SurfaceHolder.Callback {
             recorder?.setAudioSource(MediaRecorder.AudioSource.MIC)
             //设置视频来源，来自摄像头
             recorder?.setVideoSource(MediaRecorder.VideoSource.CAMERA)
-            //设置输出格式
-            recorder?.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
             //音频编码方式
-            recorder?.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
-           //设置视频编码
-            recorder?.setVideoEncoder(MediaRecorder.VideoEncoder.MPEG_4_SP)
+//            recorder?.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
+            //设置视频编码
+//            recorder?.setVideoEncoder(MediaRecorder.VideoEncoder.MPEG_4_SP)
+            //设置输出格式
+//            recorder?.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+
+            //设置视频码率
+            recorder?.setVideoEncodingBitRate(6 * 1000000)
+            //设置视频帧率，注意设备支持,设置过高可能报错
+            recorder?.setVideoFrameRate(30)
+            //设置视频宽高,因为设置了上面那些参数，所以这里最高只能设置640*480，如果需要其他值，请参考startRecorder2
+            recorder?.setVideoSize(640, 480)
+            val file =
+                File(getExternalFilesDir(Environment.DIRECTORY_MOVIES)?.absolutePath, "test.mp4")
+            //设置音频文件的存储位置 {
+            recorder?.setOutputFile(file.absolutePath)
+            //准备
+            recorder?.prepare()
+            //开始录制
+            recorder?.start()
+            ct_time.start()
+        } catch (e: Exception) {
+            Log.e("Test", e.message, e)
+        }
+
+    }
+
+    /**
+     * 如果使用了setProfile，则使用此方法
+     */
+    private fun startRecorder2() {
+        if (camera == null) {
+            return
+        }
+        if (recorder != null) {
+            stopRecord()
+        }
+        try {
+            val videoSize = CameraUtil.findFitVideoSize(camera!!.parameters,
+                sv_camera.height / sv_camera.width.toFloat()
+            )
+            //先停止camera预览,释放camera
+            camera?.stopPreview()
+            camera?.unlock()
+            //创建MediaRecorder对象
+            recorder = MediaRecorder()
+            //关联camera
+            recorder?.setCamera(camera)
+            //设置视频角度；
+            val rotation =
+                CameraUtil.getCameraPreviewOrientation(Camera.CameraInfo.CAMERA_FACING_BACK, this)
+            recorder?.setOrientationHint(rotation)
+            //设置预览区域
+            recorder?.setPreviewDisplay(sv_camera.holder.surface)
+            //设置音频来源
+            recorder?.setAudioSource(MediaRecorder.AudioSource.MIC)
+            //设置视频来源，来自摄像头
+            recorder?.setVideoSource(MediaRecorder.VideoSource.CAMERA)
+
+            //设置输出格式
+//            recorder?.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
             val profile = CameraUtil.getBestCamcorderProfile(Camera.CameraInfo.CAMERA_FACING_BACK)
             if (profile != null) {
                 //设置视频码率
-                recorder?.setVideoEncodingBitRate(profile.videoBitRate)
+                recorder?.setProfile(profile)
             }
-            //设置视频帧率，注意设备支持,设置过高可能报错
-            recorder?.setVideoFrameRate(30)
-            //设置视频宽高,测试发现最高只能设置640*480,supportVideoSize里面列出的大小无法使用，暂未清楚原因
-            recorder?.setVideoSize(640,480)
-            val file = File(getExternalFilesDir(Environment.DIRECTORY_MOVIES)?.absolutePath, "test.mp4")
+            //设置视频宽高
+            recorder?.setVideoSize(videoSize.width, videoSize.height)
+            val file =
+                File(getExternalFilesDir(Environment.DIRECTORY_MOVIES)?.absolutePath, "test.mp4")
             //设置音频文件的存储位置 {
             recorder?.setOutputFile(file.absolutePath)
             //准备
@@ -162,7 +223,7 @@ class CameraActivity : AppCompatActivity(), SurfaceHolder.Callback {
     }
 
     fun start(view: View) {
-        startRecorder()
+        startRecorder2()
     }
 
     fun stop(view: View) {

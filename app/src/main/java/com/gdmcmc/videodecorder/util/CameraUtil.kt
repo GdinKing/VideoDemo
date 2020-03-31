@@ -72,15 +72,14 @@ object CameraUtil {
         var profile: CamcorderProfile? = null
         //视频码率
         when {
-
-            CamcorderProfile.hasProfile(cameraID, CamcorderProfile.QUALITY_2160P) -> { //2160P
-                profile = CamcorderProfile.get(cameraID, CamcorderProfile.QUALITY_2160P)
+            CamcorderProfile.hasProfile(cameraID, CamcorderProfile.QUALITY_720P) -> { //720P
+                profile = CamcorderProfile.get(cameraID, CamcorderProfile.QUALITY_720P)
             }
             CamcorderProfile.hasProfile(cameraID, CamcorderProfile.QUALITY_1080P) -> { //1080P
                 profile = CamcorderProfile.get(cameraID, CamcorderProfile.QUALITY_1080P)
             }
-            CamcorderProfile.hasProfile(cameraID, CamcorderProfile.QUALITY_720P) -> { //720P
-                profile = CamcorderProfile.get(cameraID, CamcorderProfile.QUALITY_720P)
+            CamcorderProfile.hasProfile(cameraID, CamcorderProfile.QUALITY_2160P) -> { //2160P
+                profile = CamcorderProfile.get(cameraID, CamcorderProfile.QUALITY_2160P)
             }
             CamcorderProfile.hasProfile(cameraID, CamcorderProfile.QUALITY_480P) -> { //480P
                 profile = CamcorderProfile.get(cameraID, CamcorderProfile.QUALITY_480P)
@@ -100,10 +99,10 @@ object CameraUtil {
                 profile = CamcorderProfile.get(cameraID, CamcorderProfile.QUALITY_LOW)
             }
         }
-//        if (profile != null) {
-//            //视频码率
-//            profile.videoBitRate = 6000000
-//        }
+        if (profile != null) {
+            //视频码率
+            profile.videoBitRate = 6000000
+        }
         return profile
     }
 
