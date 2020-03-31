@@ -128,12 +128,11 @@ class CameraActivity : AppCompatActivity(), SurfaceHolder.Callback {
             //设置视频来源，来自摄像头
             recorder?.setVideoSource(MediaRecorder.VideoSource.CAMERA)
             //音频编码方式
-//            recorder?.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
+            recorder?.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
             //设置视频编码
-//            recorder?.setVideoEncoder(MediaRecorder.VideoEncoder.MPEG_4_SP)
+            recorder?.setVideoEncoder(MediaRecorder.VideoEncoder.MPEG_4_SP)
             //设置输出格式
-//            recorder?.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
-
+            recorder?.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
             //设置视频码率
             recorder?.setVideoEncodingBitRate(6 * 1000000)
             //设置视频帧率，注意设备支持,设置过高可能报错
