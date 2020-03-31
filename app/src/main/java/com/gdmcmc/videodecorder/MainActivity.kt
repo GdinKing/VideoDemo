@@ -23,6 +23,7 @@ class MainActivity : AppCompatActivity() {
             this,
             arrayOf(
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.CAMERA,
                 Manifest.permission.RECORD_AUDIO
             ), 100
@@ -30,12 +31,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initView() {
-        val surfaceView = ImageSurfaceView(this)
-        val lp = ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT
-        )
-        rl_container.addView(surfaceView, lp)
+//        val surfaceView = ImageSurfaceView(this)
+//        val lp = ViewGroup.LayoutParams(
+//            ViewGroup.LayoutParams.MATCH_PARENT,
+//            ViewGroup.LayoutParams.MATCH_PARENT
+//        )
+//        rl_container.addView(surfaceView, lp)
     }
 
     fun toSurface(view: View) {
@@ -62,4 +63,5 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(this, CameraActivity::class.java)
         startActivity(intent)
     }
+
 }

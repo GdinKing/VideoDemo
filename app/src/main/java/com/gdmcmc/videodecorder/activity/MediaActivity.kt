@@ -5,6 +5,7 @@ import android.media.MediaRecorder
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
+import android.os.SystemClock
 import android.util.Log
 import android.view.View
 import com.gdmcmc.videodecorder.R
@@ -66,6 +67,7 @@ class MediaActivity : AppCompatActivity() {
      */
     fun stopRecord(view: View) {
         ct_time.stop()
+        ct_time.setBase(SystemClock.elapsedRealtime())
         mediaRecorder?.stop()
         //释放资源
         mediaRecorder?.release()
