@@ -70,7 +70,6 @@ object CameraUtil {
      */
     fun getBestCamcorderProfile(cameraID: Int): CamcorderProfile? {
         var profile: CamcorderProfile? = null
-        //视频码率
         when {
             CamcorderProfile.hasProfile(cameraID, CamcorderProfile.QUALITY_720P) -> { //720P
                 profile = CamcorderProfile.get(cameraID, CamcorderProfile.QUALITY_720P)
@@ -78,16 +77,17 @@ object CameraUtil {
             CamcorderProfile.hasProfile(cameraID, CamcorderProfile.QUALITY_1080P) -> { //1080P
                 profile = CamcorderProfile.get(cameraID, CamcorderProfile.QUALITY_1080P)
             }
+            CamcorderProfile.hasProfile(cameraID, CamcorderProfile.QUALITY_HIGH) -> {//高品质
+                profile = CamcorderProfile.get(cameraID, CamcorderProfile.QUALITY_HIGH)
+                return profile
+            }
             CamcorderProfile.hasProfile(cameraID, CamcorderProfile.QUALITY_2160P) -> { //2160P
                 profile = CamcorderProfile.get(cameraID, CamcorderProfile.QUALITY_2160P)
             }
             CamcorderProfile.hasProfile(cameraID, CamcorderProfile.QUALITY_480P) -> { //480P
                 profile = CamcorderProfile.get(cameraID, CamcorderProfile.QUALITY_480P)
             }
-            CamcorderProfile.hasProfile(cameraID, CamcorderProfile.QUALITY_HIGH) -> {//高品质
-                profile = CamcorderProfile.get(cameraID, CamcorderProfile.QUALITY_HIGH)
-                return profile
-            }
+
             CamcorderProfile.hasProfile(cameraID, CamcorderProfile.QUALITY_CIF) -> {
                 profile = CamcorderProfile.get(cameraID, CamcorderProfile.QUALITY_CIF)
                 return profile
