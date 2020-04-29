@@ -24,4 +24,17 @@
         android:layout_height="wrap_content"
         android:onClick="stopRecord"
         android:text="停止录制" />
+
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="startPlay"
+        android:text="开始播放" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="stopPlay"
+        android:text="停止播放" />
 </LinearLayout>

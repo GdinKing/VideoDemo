@@ -36,4 +36,9 @@
         android:layout_height="wrap_content"
         android:text="Camera"
         android:onClick="toCamera"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CameraX"
+        android:onClick="toCameraX"/>
 </LinearLayout>

@@ -5,12 +5,8 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import com.gdmcmc.videodecorder.activity.*
-import com.gdmcmc.videodecorder.view.ImageSurfaceView
-import kotlinx.android.synthetic.main.activity_main.*
-import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -50,7 +46,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun toMedia(view: View) {
-        val intent = Intent(this, MediaActivity::class.java)
+        val intent = Intent(this, RecordActivity::class.java)
         startActivity(intent)
     }
 
@@ -64,4 +60,8 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
+    fun toCameraX(view: View) {
+        val intent = Intent(this, CameraXActivity::class.java)
+        startActivity(intent)
+    }
 }
