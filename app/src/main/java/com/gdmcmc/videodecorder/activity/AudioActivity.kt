@@ -15,7 +15,7 @@ import java.io.IOException
 
 
 /**
- * AudioRecord录制音频
+ * AudioRecord录制音频和AudioTrack播放音频
  *
  * @author king
  * @time 2020-3-26 09:49

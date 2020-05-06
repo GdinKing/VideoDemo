@@ -64,4 +64,10 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(this, CameraXActivity::class.java)
         startActivity(intent)
     }
+
+    fun toMediaExtractor(view: View) {
+
+        val intent = Intent(this, MediaExtractorActivity::class.java)
+        startActivity(intent)
+    }
 }

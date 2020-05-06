@@ -41,4 +41,9 @@
         android:layout_height="wrap_content"
         android:text="CameraX"
         android:onClick="toCameraX"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="MediaExtractor"
+        android:onClick="toMediaExtractor"/>
 </LinearLayout>
