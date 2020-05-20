@@ -72,10 +72,13 @@ class CameraActivity : AppCompatActivity(), SurfaceHolder.Callback {
                 parameters?.setPreviewSize(previewSize.width, previewSize.height)
             }
             camera?.setParameters(parameters)
+            camera?.enableShutterSound(false)
             //自动对焦
 //            camera?.autoFocus { success, camera -> }
             //预览回调，可以在这里获取NV21格式的数据或YUV数据
-//            camera?.setPreviewCallback { data, camera ->  }
+            camera?.setPreviewCallback { data, camera ->
+
+            }
             //开始预览
             camera?.startPreview()
             camera?.lock()

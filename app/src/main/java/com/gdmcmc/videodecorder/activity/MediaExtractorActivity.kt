@@ -1,5 +1,6 @@
 package com.gdmcmc.videodecorder.activity
 
+import android.media.MediaCodecList
 import android.media.MediaExtractor
 import android.media.MediaFormat
 import android.os.Bundle
@@ -81,7 +82,6 @@ class MediaExtractorActivity : AppCompatActivity() {
 
             Log.e("Test", "出错了", e)
         }
-
     }
 
     /**

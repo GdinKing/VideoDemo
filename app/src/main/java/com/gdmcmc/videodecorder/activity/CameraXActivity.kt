@@ -3,9 +3,8 @@ package com.gdmcmc.videodecorder.activity
 import android.annotation.SuppressLint
 import android.media.MediaScannerConnection
 import android.net.Uri
+import android.os.*
 import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import android.os.Environment
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.TextureView
@@ -22,6 +21,7 @@ import kotlinx.android.synthetic.main.activity_camera_x.*
 import java.io.File
 import java.lang.Math.abs
 import java.nio.ByteBuffer
+import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.ExecutorService
@@ -29,7 +29,7 @@ import java.util.concurrent.Executors
 import kotlin.math.max
 import kotlin.math.min
 
-typealias LumaListener = (luma: Double) -> Unit
+typealias LumaListener = (fps: String) -> Unit
 
 /**
  * CameraX使用示例
@@ -55,8 +55,6 @@ class CameraXActivity : AppCompatActivity() {
 
     //摄像头位置，前置/后置
     private var lensFacing: Int = CameraSelector.LENS_FACING_BACK
-
-    private var isReversedHorizontal: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -100,11 +98,8 @@ class CameraXActivity : AppCompatActivity() {
                 .setTargetRotation(rotation)//设置旋转角度
                 .build()
                 .also {
-                    it.setAnalyzer(cameraExecutor, LuminosityAnalyzer { luma ->
-                        // Values returned from our analyzer are passed to the attached listener
-                        // We log image analysis results here - you should do something useful
-                        // instead!
-                        Log.d("Test", "Average luminosity: $luma")
+                    it.setAnalyzer(cameraExecutor, LuminosityAnalyzer { fps ->
+                        handler.sendMessage(Message.obtain(handler,100,fps))
                     })
                 }
             //绑定到生命周期前先解绑所有之前绑定
@@ -115,6 +110,12 @@ class CameraXActivity : AppCompatActivity() {
                 CameraX.bindToLifecycle(this, cameraSelector, preview, imageCapture, imageAnalysis)
 
         }, ContextCompat.getMainExecutor(this))
+    }
+    private val handler = object:Handler(){
+        override fun handleMessage(msg: Message) {
+
+            tv_fps.text = "fps:"+msg.obj.toString()
+        }
     }
 
     /**
@@ -141,6 +142,7 @@ class CameraXActivity : AppCompatActivity() {
                 cameraExecutor,
                 object : ImageCapture.OnImageSavedCallback {
                     override fun onImageSaved(output: ImageCapture.OutputFileResults) {
+                        Toast.makeText(this@CameraXActivity,"拍摄成功",Toast.LENGTH_SHORT).show()
                         val savedUri = output.savedUri ?: Uri.fromFile(file)
                         val mimeType = MimeTypeMap.getSingleton()
                             .getMimeTypeFromExtension(savedUri.toFile().extension)
@@ -149,7 +151,7 @@ class CameraXActivity : AppCompatActivity() {
                             arrayOf(savedUri.toString()),
                             arrayOf(mimeType)
                         ) { _, uri ->
-                            Log.i("Test", "Image capture scanned into media store: $uri")
+                            Log.i("Test", "e:Image capture scanned into media stor $uri")
                         }
                     }
 
@@ -189,10 +191,10 @@ class CameraXActivity : AppCompatActivity() {
      * <p>All we need to do is override the function `analyze` with our desired operations. Here,
      * we compute the average luminosity of the image by looking at the Y plane of the YUV frame.
      */
-    private class LuminosityAnalyzer(listener: LumaListener? = null) : ImageAnalysis.Analyzer {
+    private class LuminosityAnalyzer(var listener: LumaListener? = null) : ImageAnalysis.Analyzer {
         private val frameRateWindow = 8
         private val frameTimestamps = ArrayDeque<Long>(5)
-        private val listeners = ArrayList<LumaListener>().apply { listener?.let { add(it) } }
+//        private val listeners = ArrayList<LumaListener>().apply { listener?.let { add(it) } }
         private var lastAnalyzedTimestamp = 0L
         var framesPerSecond: Double = -1.0
             private set
@@ -200,7 +202,7 @@ class CameraXActivity : AppCompatActivity() {
         /**
          * Used to add listeners that will be called with each luma computed
          */
-        fun onFrameAnalyzed(listener: LumaListener) = listeners.add(listener)
+//        fun onFrameAnalyzed(listener: LumaListener) = listeners.add(listener)
 
         /**
          * Helper extension function used to extract a byte array from an image plane buffer
@@ -230,7 +232,11 @@ class CameraXActivity : AppCompatActivity() {
          */
         override fun analyze(image: ImageProxy) {
             // If there are no listeners attached, we don't need to perform analysis
-            if (listeners.isEmpty()) {
+//            if (listeners.isEmpty()) {
+//                image.close()
+//                return
+//            }
+            if(listener == null){
                 image.close()
                 return
             }
@@ -258,13 +264,14 @@ class CameraXActivity : AppCompatActivity() {
             val data = buffer.toByteArray()
 
             // Convert the data into an array of pixel values ranging 0-255
-            val pixels = data.map { it.toInt() and 0xFF }
+//            val pixels = data.map { it.toInt() and 0xFF }
 
             // Compute average luminance for the image
-            val luma = pixels.average()
+//            val luma = pixels.average()
 
             // Call all listeners with new value
-            listeners.forEach { it(luma) }
+//            listeners.forEach { it(framesPerSecond) }
+            listener?.invoke(DecimalFormat("####0.0").format(framesPerSecond))
 
             image.close()
         }

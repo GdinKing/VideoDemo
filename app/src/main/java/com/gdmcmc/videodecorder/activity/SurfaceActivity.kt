@@ -12,6 +12,7 @@ import com.gdmcmc.videodecorder.R
 import kotlinx.android.synthetic.main.activity_surface.*
 import java.io.File
 import java.lang.Exception
+
 /**
  * SurfaceView使用示例
  * @author king
@@ -46,15 +47,18 @@ class SurfaceActivity : AppCompatActivity(), SurfaceHolder.Callback {
      */
     private fun initMedia() {
         videoPath = "/storage/emulated/0/DCIM/Camera/VID_20200311_082801.mp4"
-
-        mediaPlayer = MediaPlayer()
-        mediaPlayer?.setDataSource(videoPath)
-        mediaPlayer?.setOnPreparedListener {
-            start()//缓冲完，播放
-        }
-        mediaPlayer?.setOnCompletionListener {
-            Toast.makeText(this,"播放完毕",Toast.LENGTH_SHORT).show()
-            btn_play.text = "重新播放"
+        try {
+            mediaPlayer = MediaPlayer()
+            mediaPlayer?.setDataSource(videoPath)
+            mediaPlayer?.setOnPreparedListener {
+                start()//缓冲完，播放
+            }
+            mediaPlayer?.setOnCompletionListener {
+                Toast.makeText(this, "播放完毕", Toast.LENGTH_SHORT).show()
+                btn_play.text = "重新播放"
+            }
+        } catch (e: Exception) {
+            Log.e("Test","出错了",e)
         }
     }
 
@@ -72,12 +76,12 @@ class SurfaceActivity : AppCompatActivity(), SurfaceHolder.Callback {
         mediaPlayer?.prepareAsync()
     }
 
-    private fun start(){
+    private fun start() {
         btn_play.text = "暂停"
         mediaPlayer?.start()
     }
 
-    private fun pause(){
+    private fun pause() {
         btn_play.text = "播放"
         mediaPlayer?.pause()
     }
